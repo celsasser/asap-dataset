@@ -12,7 +12,7 @@
 
 # misc directories and files that are automatically generated
 coverage
-dist
+build
 node_modules
 package-lock.json
 

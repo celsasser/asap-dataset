@@ -9,7 +9,7 @@
 		/* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
 		"module": "commonjs",
 		/* Redirect output structure to the directory. */
-		"outDir": "./dist",
+		"outDir": "./build",
 		/* Do not generate javascript on errors. */
 		"noEmitOnError": false,
 		/* Raise error on expressions and declarations with an implied 'any' type. */

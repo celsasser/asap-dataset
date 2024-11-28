@@ -2,7 +2,7 @@
 	"author": "curtis.elsasser22@spsmail.cuny.edu",
 	"dependencies": {
 		"commander": "12.1.0",
-		"midi-file-io": "4.0.0",
+		"midi-file-io": "4.1.1",
 		"fast-csv": "5.0.2"
 	},
 	"description": "Converts a MIDI file to a CSV file.",
@@ -22,7 +22,7 @@
 	"license": "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International",
 	"main": "build/index",
 	"name": "assembler",
-	"readme": "./READM.md",
+	"readme": "./README.md",
 	"scripts": {
 		"build": "npx tsc -p tsconfig.json",
 		"clean": "rm -rf './.buildcache' '*.log' './build'",
