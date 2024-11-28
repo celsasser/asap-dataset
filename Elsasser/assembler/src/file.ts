@@ -30,8 +30,9 @@ export async function execute(pathMIDI: string, pathCSV: string): Promise<void> 
 		try {
 			const song = parseMidiFile(pathMIDI);
 			const rect = rectanglify(song);
-			writeCSV(pathCSV, rect);
-			resolve();
+			writeCSV(pathCSV, rect)
+				.then(resolve)
+				.catch(reject);
 		} catch (e) {
 			reject(e);
 		}
@@ -186,22 +187,21 @@ function rectanglify(midi: MidiIoSong): any[] {
 	});
 }
 
-function writeCSV(path: string, rect: FormatterRow): void {
-	const streamFile = createWriteStream(path);
-	let streamCsv = format({
-		headers: ["type", "tickOffset", "tickLength", "value"],
-		quoteColumns: [false, false, false, false]
-	});
-	try {
-		streamCsv.pipe(streamFile);
-		// write the bits and bobs
-		rect.forEach((row: FormatterRow) => {
-			streamCsv.write(row);
+async function writeCSV(path: string, rect: FormatterRow): Promise<void> {
+	return new Promise((resolve, reject) => {
+		const streamFile = createWriteStream(path)
+			.on("finish", () => {
+				resolve()
+			})
+			.on("error", (error) => {
+				reject(new Error(`Error writing ${path}: ${error}`));
+			});
+		let streamCsv = format({
+			headers: ["type", "tickOffset", "tickLength", "value"],
+			quoteColumns: [false, false, false, false]
 		});
+		streamCsv.pipe(streamFile);
+		rect.forEach((row: FormatterRow) => streamCsv.write(row));
 		streamCsv.end();
-	} catch (e) {
-		throw new Error(`Error writing CSV file: ${e}`);
-	} finally {
-		streamFile.close();
-	}
+	})
 }

@@ -30,7 +30,9 @@ program
 
 program.parseAsync(process.argv)
 	.then(() => {
-		process.exit(0);
+		// Let's let the process exit naturally. I was exiting and had an issue.
+		// It was a synchronizing issue and preventing files from ever completing.
+		// It's fixed, nonetheless playing it safe. The process will exit on its own.
 	})
 	.catch(error => {
 		console.error(error);
