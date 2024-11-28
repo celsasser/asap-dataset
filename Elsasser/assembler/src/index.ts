@@ -15,8 +15,8 @@ program
 	.command("file")
 	.argument("<pathMIDI>", "Path to the source MIDI file")
 	.argument("<pathCSV>", "Path to the target output file")
-	.action((pathMIDI: string, pathCSV: string): void => {
-		file.execute(pathMIDI, pathCSV);
+	.action(async (pathMIDI: string, pathCSV: string): Promise<void> => {
+		return file.execute(pathMIDI, pathCSV);
 	});
 
 // CSV file list of files
@@ -24,9 +24,15 @@ program
 	.description("CSV manifest -> CSV files")
 	.command("list")
 	.argument("<pathCSV>", "Path to the source manifest file")
-	.action((pathCSV: string): void => {
-		list.execute(pathCSV);
+	.action(async (pathCSV: string): Promise<void> => {
+		return list.execute(pathCSV);
 	});
 
-
-program.parse();
+program.parseAsync(process.argv)
+	.then(() => {
+		process.exit(0);
+	})
+	.catch(error => {
+		console.error(error);
+		process.exit(1);
+	});

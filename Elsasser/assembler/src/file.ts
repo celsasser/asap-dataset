@@ -25,10 +25,17 @@ sortMap.set(MidiIoEventSubtype.NoteOn, 4);
 // ********************************************************************
 // Exported API
 // ********************************************************************
-export function execute(pathMIDI: string, pathCSV: string): void {
-	const song = parseMidiFile(pathMIDI);
-	const rect = rectanglify(song);
-	writeCSV(pathCSV, rect);
+export async function execute(pathMIDI: string, pathCSV: string): Promise<void> {
+	return new Promise((resolve, reject) => {
+		try {
+			const song = parseMidiFile(pathMIDI);
+			const rect = rectanglify(song);
+			writeCSV(pathCSV, rect);
+			resolve();
+		} catch (e) {
+			reject(e);
+		}
+	})
 }
 
 // ********************************************************************
@@ -180,11 +187,11 @@ function rectanglify(midi: MidiIoSong): any[] {
 }
 
 function writeCSV(path: string, rect: FormatterRow): void {
+	const streamFile = createWriteStream(path);
 	let streamCsv = format({
 		headers: ["type", "tickOffset", "tickLength", "value"],
 		quoteColumns: [false, false, false, false]
 	});
-	const streamFile = createWriteStream(path);
 	try {
 		streamCsv.pipe(streamFile);
 		// write the bits and bobs
@@ -193,7 +200,7 @@ function writeCSV(path: string, rect: FormatterRow): void {
 		});
 		streamCsv.end();
 	} catch (e) {
-		console.error(`Error writing CSV file: ${e}`);
+		throw new Error(`Error writing CSV file: ${e}`);
 	} finally {
 		streamFile.close();
 	}
