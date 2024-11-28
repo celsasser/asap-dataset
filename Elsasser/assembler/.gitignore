@@ -5,6 +5,8 @@
 *~
 *.tmp
 *.zip
+
+# log files
 /log
 
 # eliminate .idea
@@ -16,5 +18,6 @@ build
 node_modules
 package-lock.json
 
-# our own internal gobbledegook
-test/data/out.mid
+# dynamic stuff that we don't want to keep
+!trash/.keep
+trash/*

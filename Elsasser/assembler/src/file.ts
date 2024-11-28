@@ -7,7 +7,6 @@ import {
 	MidiIoEventSubtype,
 	MidiIoSong,
 	MidiIoTrack,
-	dumpMidiSong,
 	parseMidiFile
 } from "midi-file-io"
 import {createWriteStream} from "node:fs";
@@ -28,7 +27,6 @@ sortMap.set(MidiIoEventSubtype.NoteOn, 4);
 // ********************************************************************
 export function execute(pathMIDI: string, pathCSV: string): void {
 	const song = parseMidiFile(pathMIDI);
-	dumpMidiSong(song);
 	const rect = rectanglify(song);
 	writeCSV(pathCSV, rect);
 }
@@ -116,6 +114,7 @@ function preprocessTracks(tracks: MidiIoTrack[]): MidiIoTrackAbs[] {
 				|| event.subtype === MidiIoEventSubtype.TimeSignature
 			) {
 				const eventAbs = {
+					tickLength: 0,
 					tickOffset,
 					...event
 				};
@@ -124,15 +123,20 @@ function preprocessTracks(tracks: MidiIoTrack[]): MidiIoTrackAbs[] {
 					queue.push(eventAbs);
 				}
 			} else if (event.subtype === MidiIoEventSubtype.NoteOff) {
-				// look for first match in our queue and update
+				// look for the oldest (first) match in our queue and update
 				const noteOnEvent = queue.find((e) =>
-					e.subtype === MidiIoEventSubtype.NoteOn && e.noteNumber === event.noteNumber
+					e.noteNumber === event.noteNumber
 				);
 				if (noteOnEvent) {
 					noteOnEvent.tickLength = tickOffset - noteOnEvent.tickOffset;
+					queue.splice(queue.indexOf(noteOnEvent), 1);
 				} else {
 					console.warn(`note off missing partner: ${event}`);
 				}
+			} else if(event.subtype === MidiIoEventSubtype.EndOfTrack) {
+				queue.forEach((e) => {
+					e.tickLength = tickOffset - e.tickOffset;
+				})
 			}
 		});
 		return record;
@@ -154,21 +158,21 @@ function rectanglify(midi: MidiIoSong): any[] {
 			return [
 				event.subtype,
 				event.tickOffset,
-				0,
+				event.tickLength,
 				formatTempoValue(event),
 			];
 		} else if (event.subtype === MidiIoEventSubtype.KeySignature) {
 			return [
 				event.subtype,
 				event.tickOffset,
-				0,
+				event.tickLength,
 				formatKeySignatureValue(event),
 			];
 		} else {
 			return [
 				event.subtype,
 				event.tickOffset,
-				0,
+				event.tickLength,
 				formatTimeSignatureValue(event),
 			]
 		}
@@ -177,19 +181,20 @@ function rectanglify(midi: MidiIoSong): any[] {
 
 function writeCSV(path: string, rect: FormatterRow): void {
 	let streamCsv = format({
-		headers: true
+		headers: ["type", "tickOffset", "tickLength", "value"],
+		quoteColumns: [false, false, false, false]
 	});
 	const streamFile = createWriteStream(path);
 	try {
 		streamCsv.pipe(streamFile);
-		// write the heading
-		streamCsv.write(["type", "tickOffset", "tickLength", "value"]);
 		// write the bits and bobs
-		rect.forEach(streamCsv.write);
+		rect.forEach((row: FormatterRow) => {
+			streamCsv.write(row);
+		});
 		streamCsv.end();
-		streamFile.close();
 	} catch (e) {
 		console.error(`Error writing CSV file: ${e}`);
+	} finally {
 		streamFile.close();
 	}
 }
