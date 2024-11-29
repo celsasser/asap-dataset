@@ -255,9 +255,7 @@ function sortTrack(track: MidiIoTrackAbs): MidiIoTrackAbs {
 async function writeCSV(path: string, rect: FormatterRow): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const streamFile = createWriteStream(path)
-			.on("finish", () => {
-				resolve()
-			})
+			.on("finish", resolve)
 			.on("error", (error) => {
 				reject(new Error(`Error writing ${path}: ${error}`));
 			});
