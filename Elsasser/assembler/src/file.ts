@@ -12,6 +12,17 @@ import {
 } from "midi-file-io"
 import {createWriteStream} from "node:fs";
 import {
+	formatKeySignatureValuePretty,
+	formatKeySignatureValueRaw,
+	formatNoteValueCanonical,
+	formatNoteValuePretty,
+	formatNoteValueRaw,
+	formatTempoValuePretty,
+	formatTempoValueRaw,
+	formatTimeSignatureValuePretty,
+	formatTimeSignatureValueRaw
+} from "./format";
+import {
 	MidiIoEventAbs,
 	MidiIoTrackAbs
 } from "./types";
@@ -43,55 +54,6 @@ export async function execute(pathMIDI: string, pathCSV: string): Promise<void> 
 // ********************************************************************
 // Internal API
 // ********************************************************************
-function formatNoteValue(event: MidiIoEventAbs): string {
-	return `${event.noteNumber}:${event.velocity}`
-}
-
-function formatKeySignatureValue(event: MidiIoEventAbs): string {
-	const scale = (event.scale === 0) ? "Major" : "Minor";
-	switch (event.key) {
-		case -7:
-			return `Cb ${scale}`;
-		case -6:
-			return `Gb ${scale}`;
-		case -5:
-			return `Db ${scale}`;
-		case -4:
-			return `Ab ${scale}`;
-		case -3:
-			return `Eb ${scale}`;
-		case -2:
-			return `Bb ${scale}`;
-		case -1:
-			return `F ${scale}`;
-		case 0:
-			return `C ${scale}`;
-		case 1:
-			return `G ${scale}`;
-		case 2:
-			return `D ${scale}`;
-		case 3:
-			return `A ${scale}`;
-		case 4:
-			return `E ${scale}`;
-		case 5:
-			return `B ${scale}`;
-		case 6:
-			return `F# ${scale}`;
-		case 7:
-			return `C# ${scale}`;
-	}
-	return `Unknown ${scale}`;
-}
-
-function formatTempoValue(event: MidiIoEventAbs): string {
-	return `${60 * 1000000 / event.microsecondsPerBeat}`
-}
-
-function formatTimeSignatureValue(event: MidiIoEventAbs): string {
-	return `${event.numerator}/${event.denominator}`
-}
-
 function mergeTracks(tracks: MidiIoTrackAbs[]): MidiIoTrackAbs {
 	const track = tracks.reduce<MidiIoTrackAbs>((record, track): MidiIoTrackAbs => {
 		track.forEach((event): void => {
@@ -218,6 +180,7 @@ function preprocessTracks(tracks: MidiIoTrack[]): MidiIoTrackAbs[] {
 }
 
 function rectanglify(midi: MidiIoSong): any[] {
+	let eventKS: MidiIoEventAbs;
 	const preprocessed = preprocessTracks(midi.tracks);
 	const merged = mergeTracks(preprocessed);
 	const normalized = normalizeTrack(merged);
@@ -228,28 +191,37 @@ function rectanglify(midi: MidiIoSong): any[] {
 				event.subtype,
 				event.tickOffset,
 				event.tickLength,
-				formatNoteValue(event),
+				formatNoteValueRaw(event),
+				formatNoteValuePretty(event, eventKS),
+				formatNoteValueCanonical(event)
 			];
 		} else if (event.subtype === MidiIoEventSubtype.SetTempo) {
 			return [
 				event.subtype,
 				event.tickOffset,
 				event.tickLength,
-				formatTempoValue(event),
+				formatTempoValueRaw(event),
+				formatTempoValuePretty(event),
+				""
 			];
 		} else if (event.subtype === MidiIoEventSubtype.KeySignature) {
+			eventKS = event;
 			return [
 				event.subtype,
 				event.tickOffset,
 				event.tickLength,
-				formatKeySignatureValue(event),
+				formatKeySignatureValueRaw(event),
+				formatKeySignatureValuePretty(event),
+				""
 			];
 		} else {
 			return [
 				event.subtype,
 				event.tickOffset,
 				event.tickLength,
-				formatTimeSignatureValue(event),
+				formatTimeSignatureValueRaw(event),
+				formatTimeSignatureValuePretty(event),
+				""
 			]
 		}
 	});
@@ -274,8 +246,8 @@ async function writeCSV(path: string, rect: FormatterRow): Promise<void> {
 				reject(new Error(`Error writing ${path}: ${error}`));
 			});
 		let streamCsv = format({
-			headers: ["type", "tickOffset", "tickLength", "value"],
-			quoteColumns: [false, false, false, false]
+			headers: ["type", "tickOffset", "tickLength", "valueRaw", "valuePretty", "canonical"],
+			quoteColumns: [false, false, false, false, false, false]
 		});
 		streamCsv.pipe(streamFile);
 		rect.forEach((row: FormatterRow) => streamCsv.write(row));

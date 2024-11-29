@@ -35,8 +35,8 @@ async function updateMidiFileList(pathCSV: string): Promise<void> {
 		const composer = getComposer(line.composer);
 		line.csv_score = line.midi_score.replace(/\.mid$/, ".csv");
 		line.csv_performance = line.midi_performance.replace(/\.mid$/, ".csv");
-		line.yearBorn = composer.yearBorn.toString();
-		line.yearDied = composer.yearDied.toString();
+		line.yearBorn = composer.yearBorn;
+		line.yearDied = composer.yearDied;
 	});
 	if (csvData.header.indexOf("csv_score") < 0) {
 		csvData.header.push("csv_score");
