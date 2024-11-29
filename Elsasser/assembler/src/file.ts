@@ -5,6 +5,7 @@ import {
 import {
 	MidiIoEvent,
 	MidiIoEventSubtype,
+	MidiIoEventType,
 	MidiIoSong,
 	MidiIoTrack,
 	parseMidiFile
@@ -108,6 +109,51 @@ function mergeTracks(tracks: MidiIoTrackAbs[]): MidiIoTrackAbs {
 	});
 }
 
+/**
+ * I want to make sure there always is a time-signature, key-signature and tempo
+ * Nothing fancy, if they aren't at tickOffset = 0, we will add them.
+ * Note: the order does not matter here. We have not sorted them yet.
+ * @param track
+ */
+function normalizeTrack(track: MidiIoTrackAbs): MidiIoTrackAbs {
+	const timeSignature = track.find((e) => e.subtype === MidiIoEventSubtype.TimeSignature);
+	const keySignature = track.find((e) => e.subtype === MidiIoEventSubtype.KeySignature);
+	const tempo = track.find((e) => e.subtype === MidiIoEventSubtype.SetTempo);
+	if(timeSignature === undefined || timeSignature.tickOffset !== 0) {
+		track.push({
+			denominator: 4,
+			numerator: 4,
+			subtype: MidiIoEventSubtype.TimeSignature,
+			tickLength: 0,
+			tickOffset: 0,
+			deltaTime: 0,
+			type: MidiIoEventType.Meta
+		});
+	}
+	if(keySignature === undefined || keySignature.tickOffset !== 0) {
+		track.push({
+			key: 0,
+			scale: 0,
+			subtype: MidiIoEventSubtype.KeySignature,
+			tickLength: 0,
+			tickOffset: 0,
+			deltaTime: 0,
+			type: MidiIoEventType.Meta
+		});
+	}
+	if(tempo === undefined || tempo.tickOffset !== 0) {
+		track.push({
+			microsecondsPerBeat: 500000,
+			subtype: MidiIoEventSubtype.SetTempo,
+			tickLength: 0,
+			tickOffset: 0,
+			deltaTime: 0,
+			type: MidiIoEventType.Meta
+		});
+	}
+	return track;
+}
+
 function preprocessTracks(tracks: MidiIoTrack[]): MidiIoTrackAbs[] {
 	return tracks.map<MidiIoTrackAbs>((track): MidiIoTrackAbs => {
 		let tickOffset: number = 0;
@@ -148,13 +194,15 @@ function preprocessTracks(tracks: MidiIoTrack[]): MidiIoTrackAbs[] {
 			}
 		});
 		return record;
-	}, []);
+	});
 }
 
 function rectanglify(midi: MidiIoSong): any[] {
 	const preprocessed = preprocessTracks(midi.tracks);
 	const merged = mergeTracks(preprocessed);
-	return merged.map(event => {
+	const normalized = normalizeTrack(merged);
+	const sorted = sortTrack(normalized);
+	return sorted.map(event => {
 		if (event.subtype === MidiIoEventSubtype.NoteOn) {
 			return [
 				event.subtype,
@@ -186,6 +234,17 @@ function rectanglify(midi: MidiIoSong): any[] {
 		}
 	});
 }
+
+function sortTrack(track: MidiIoTrackAbs): MidiIoTrackAbs {
+	return track.sort((a: MidiIoEventAbs, b: MidiIoEventAbs): number => {
+		if (a.tickOffset !== b.tickOffset) {
+			return a.tickOffset - b.tickOffset
+		} else {
+			return sortMap.get(a.subtype) - sortMap.get(b.subtype);
+		}
+	});
+}
+
 
 async function writeCSV(path: string, rect: FormatterRow): Promise<void> {
 	return new Promise((resolve, reject) => {
