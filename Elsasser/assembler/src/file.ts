@@ -116,16 +116,16 @@ function mergeTracks(tracks: MidiIoTrackAbs[]): MidiIoTrackAbs {
  * @param track
  */
 function normalizeTrack(track: MidiIoTrackAbs): MidiIoTrackAbs {
-	const timeSignature = track.find((e) => {
+	const timeSignatures = track.filter((e) => {
 		return e.subtype === MidiIoEventSubtype.TimeSignature && e.tickOffset === 0;
 	});
-	const keySignature = track.find((e) => {
+	const keySignatures = track.filter((e) => {
 		return e.subtype === MidiIoEventSubtype.KeySignature && e.tickOffset === 0;
 	});
-	const tempo = track.find((e) => {
+	const tempos = track.filter((e) => {
 		return e.subtype === MidiIoEventSubtype.SetTempo && e.tickOffset === 0;
 	});
-	if(timeSignature === undefined) {
+	if (timeSignatures.length === 0) {
 		track.push({
 			denominator: 4,
 			numerator: 4,
@@ -135,8 +135,13 @@ function normalizeTrack(track: MidiIoTrackAbs): MidiIoTrackAbs {
 			deltaTime: 0,
 			type: MidiIoEventType.Meta
 		});
+	} else if (timeSignatures.length > 1) {
+		console.warn(`multiple time signatures found: ${JSON.stringify(timeSignatures)})`);
+		for (let i = 0; i < timeSignatures.length - 1; i++) {
+			track.splice(track.indexOf(timeSignatures[i]), 1);
+		}
 	}
-	if(keySignature === undefined) {
+	if (keySignatures.length === 0) {
 		track.push({
 			key: 0,
 			scale: 0,
@@ -146,8 +151,13 @@ function normalizeTrack(track: MidiIoTrackAbs): MidiIoTrackAbs {
 			deltaTime: 0,
 			type: MidiIoEventType.Meta
 		});
+	} else if (keySignatures.length > 1) {
+		console.warn(`multiple key signatures found: ${JSON.stringify(keySignatures)}`);
+		for (let i = 0; i < keySignatures.length - 1; i++) {
+			track.splice(track.indexOf(keySignatures[i]), 1);
+		}
 	}
-	if(tempo === undefined) {
+	if (tempos.length === 0) {
 		track.push({
 			microsecondsPerBeat: 500000,
 			subtype: MidiIoEventSubtype.SetTempo,
@@ -156,6 +166,11 @@ function normalizeTrack(track: MidiIoTrackAbs): MidiIoTrackAbs {
 			deltaTime: 0,
 			type: MidiIoEventType.Meta
 		});
+	} else if (tempos.length > 1) {
+		console.warn(`multiple tempo signatures found: ${JSON.stringify(tempos)}`);
+		for (let i = 0; i < tempos.length - 1; i++) {
+			track.splice(track.indexOf(tempos[i]), 1);
+		}
 	}
 	return track;
 }
@@ -193,7 +208,7 @@ function preprocessTracks(tracks: MidiIoTrack[]): MidiIoTrackAbs[] {
 				} else {
 					console.warn(`note off missing partner: ${event}`);
 				}
-			} else if(event.subtype === MidiIoEventSubtype.EndOfTrack) {
+			} else if (event.subtype === MidiIoEventSubtype.EndOfTrack) {
 				queue.forEach((e) => {
 					e.tickLength = tickOffset - e.tickOffset;
 				})
