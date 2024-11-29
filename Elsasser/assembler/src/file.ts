@@ -85,8 +85,7 @@ function formatKeySignatureValue(event: MidiIoEventAbs): string {
 }
 
 function formatTempoValue(event: MidiIoEventAbs): string {
-	// todo: check up on this guy
-	return `${event.microsecondsPerBeat}`
+	return `${60 * 1000000 / event.microsecondsPerBeat}`
 }
 
 function formatTimeSignatureValue(event: MidiIoEventAbs): string {
