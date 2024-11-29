@@ -116,10 +116,16 @@ function mergeTracks(tracks: MidiIoTrackAbs[]): MidiIoTrackAbs {
  * @param track
  */
 function normalizeTrack(track: MidiIoTrackAbs): MidiIoTrackAbs {
-	const timeSignature = track.find((e) => e.subtype === MidiIoEventSubtype.TimeSignature);
-	const keySignature = track.find((e) => e.subtype === MidiIoEventSubtype.KeySignature);
-	const tempo = track.find((e) => e.subtype === MidiIoEventSubtype.SetTempo);
-	if(timeSignature === undefined || timeSignature.tickOffset !== 0) {
+	const timeSignature = track.find((e) => {
+		return e.subtype === MidiIoEventSubtype.TimeSignature && e.tickOffset === 0;
+	});
+	const keySignature = track.find((e) => {
+		return e.subtype === MidiIoEventSubtype.KeySignature && e.tickOffset === 0;
+	});
+	const tempo = track.find((e) => {
+		return e.subtype === MidiIoEventSubtype.SetTempo && e.tickOffset === 0;
+	});
+	if(timeSignature === undefined) {
 		track.push({
 			denominator: 4,
 			numerator: 4,
@@ -130,7 +136,7 @@ function normalizeTrack(track: MidiIoTrackAbs): MidiIoTrackAbs {
 			type: MidiIoEventType.Meta
 		});
 	}
-	if(keySignature === undefined || keySignature.tickOffset !== 0) {
+	if(keySignature === undefined) {
 		track.push({
 			key: 0,
 			scale: 0,
@@ -141,7 +147,7 @@ function normalizeTrack(track: MidiIoTrackAbs): MidiIoTrackAbs {
 			type: MidiIoEventType.Meta
 		});
 	}
-	if(tempo === undefined || tempo.tickOffset !== 0) {
+	if(tempo === undefined) {
 		track.push({
 			microsecondsPerBeat: 500000,
 			subtype: MidiIoEventSubtype.SetTempo,

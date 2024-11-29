@@ -1,5 +1,6 @@
 import {Command} from "commander"
 import {version} from "../package.json"
+import * as dump from "./dump";
 import * as file from "./file";
 import * as list from "./list";
 
@@ -26,6 +27,14 @@ program
 	.argument("<pathCSV>", "Path to the source manifest file")
 	.action(async (pathCSV: string): Promise<void> => {
 		return list.execute(pathCSV);
+	});
+
+program
+	.description("Dump a MIDI file")
+	.command("dump")
+	.argument("<pathMIDI>", "Path to the MIDI file")
+	.action(async (pathMIDI: string): Promise<void> => {
+		return dump.execute(pathMIDI);
 	});
 
 program.parseAsync(process.argv)
