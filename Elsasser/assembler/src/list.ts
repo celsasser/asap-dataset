@@ -1,5 +1,6 @@
 import {writeToPath} from "fast-csv";
 import * as path from "node:path";
+import {getComposer} from "./composers";
 import {readCsvFile} from "./csv";
 import * as file from "./file";
 import {CsvFile} from "./types";
@@ -31,14 +32,23 @@ async function getMidiFileList(pathCSV: string): Promise<string[]> {
 async function updateMidiFileList(pathCSV: string): Promise<void> {
 	const csvData: CsvFile = await readCsvFile(pathCSV);
 	csvData.data.forEach((line) => {
+		const composer = getComposer(line.composer);
 		line.csv_score = line.midi_score.replace(/\.mid$/, ".csv");
 		line.csv_performance = line.midi_performance.replace(/\.mid$/, ".csv");
+		line.yearBorn = composer.yearBorn.toString();
+		line.yearDied = composer.yearDied.toString();
 	});
-	if(csvData.header.indexOf("csv_score") < 0) {
+	if (csvData.header.indexOf("csv_score") < 0) {
 		csvData.header.push("csv_score");
 	}
-	if(csvData.header.indexOf("csv_performance") < 0) {
+	if (csvData.header.indexOf("csv_performance") < 0) {
 		csvData.header.push("csv_performance");
+	}
+	if (csvData.header.indexOf("yearBorn") < 0) {
+		csvData.header.splice(csvData.header.indexOf("composer") + 1, 0, "yearBorn");
+	}
+	if (csvData.header.indexOf("yearDied") < 0) {
+		csvData.header.splice(csvData.header.indexOf("yearBorn") + 1, 0, "yearDied");
 	}
 	return new Promise((resolve, reject) => {
 		writeToPath(pathCSV, csvData.data, {headers: csvData.header})
