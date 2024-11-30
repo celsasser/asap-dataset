@@ -114,7 +114,7 @@ function normalizeTrack(track: MidiIoTrackAbs, header: MidiIoHeader): MidiIoTrac
 			type: MidiIoEventType.Meta
 		});
 	} else if (timeSignatures.length > 1) {
-		console.warn(`multiple time signatures found: ${JSON.stringify(timeSignatures)})`);
+		console.warn(`multiple time-signatures found: ${JSON.stringify(timeSignatures)})`);
 		for (let i = 0; i < timeSignatures.length - 1; i++) {
 			track.splice(track.indexOf(timeSignatures[i]), 1);
 		}
@@ -130,7 +130,7 @@ function normalizeTrack(track: MidiIoTrackAbs, header: MidiIoHeader): MidiIoTrac
 			type: MidiIoEventType.Meta
 		});
 	} else if (keySignatures.length > 1) {
-		console.warn(`multiple key signatures found: ${JSON.stringify(keySignatures)}`);
+		console.warn(`multiple key-signatures found: ${JSON.stringify(keySignatures)}`);
 		for (let i = 0; i < keySignatures.length - 1; i++) {
 			track.splice(track.indexOf(keySignatures[i]), 1);
 		}
@@ -145,7 +145,7 @@ function normalizeTrack(track: MidiIoTrackAbs, header: MidiIoHeader): MidiIoTrac
 			type: MidiIoEventType.Meta
 		});
 	} else if (tempos.length > 1) {
-		console.warn(`multiple tempo signatures found: ${JSON.stringify(tempos)}`);
+		console.warn(`multiple tempos found: ${JSON.stringify(tempos)}`);
 		for (let i = 0; i < tempos.length - 1; i++) {
 			track.splice(track.indexOf(tempos[i]), 1);
 		}
@@ -199,7 +199,7 @@ function preprocessTracks(tracks: MidiIoTrack[]): MidiIoTrackAbs[] {
 					noteOnEvent.tickLength = tickOffset - noteOnEvent.tickOffset;
 					queue.splice(queue.indexOf(noteOnEvent), 1);
 				} else {
-					console.warn(`note off missing partner: ${event}`);
+					console.warn(`note off missing partner: ${JSON.stringify(event)}`);
 				}
 			} else if (event.subtype === MidiIoEventSubtype.EndOfTrack) {
 				queue.forEach((e) => {
