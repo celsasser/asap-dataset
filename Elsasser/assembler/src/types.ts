@@ -39,6 +39,10 @@ export interface MidiIoEventAbs extends MidiIoEvent {
     tickLength: number;
 }
 
+/**
+ * There is no means of extending an enum that I like. The following is
+ * the best of the worst. It would be really nice if one could extend enums.
+ */
 export const MidiIoEventSubtypeExt = {
     ...MidiIoEventSubtype,
     TicksPerQuarter: "ticksPerQuarter"
