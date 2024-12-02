@@ -1,5 +1,7 @@
 project:
   title: "Classical Analysis"
 
-
-
+format:
+  html:
+    theme: cosmo
+    embed-resources: true

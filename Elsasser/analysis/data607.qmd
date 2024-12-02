@@ -2,3 +2,55 @@
 title: "DATA 607: Final Project"
 author: "Curtis Elsasser"
 ---
+
+## Setup
+```{r}
+#| warning: false
+library(kableExtra)
+library(tidyverse)
+source("wrangle.R")
+```
+
+
+
+## Overview
+
+
+## Manifest
+It's not a ship's log, so I don't know if `manifest` the best description of the catalog (which might be a better word). But I couldn't think of a better, short term for it, so I'm sticking with it. The manifest is a CSV file that contains metadata about the performances and scores of the pieces in the dataset. The metadata includes the composer, the year they were born and died, the title of the piece, and the path to the CSV file that contains the data. The data in the CSV files are the performances and scores of the pieces. The performances are the actual recordings of the pieces, and the scores are the sheet music of the pieces. The manifest is the key to the dataset. It tells us where to find the data and how to interpret it. And that is where we shall start.
+
+### Load
+```{r}
+tbl_manifest <- load_manifest()
+tbl_scores <- tbl_manifest$scores
+tbl_perfs <- tbl_manifest$perfs
+```
+
+Let's get an idea of what their insides look like.
+
+### Scores
+
+This is a list of 235 scores. It's long but I think it give an excellent overview of the dataset. So I'm going to tuck it into a collapsible note. I'll determine his fate later.
+
+:::{.callout-note collapse=false}
+#### Compositions
+```{r}
+tbl_scores |>
+  kable()
+```
+:::
+
+
+```{r}
+tbl_scores |>
+  head()
+```
+
+### Performances
+There are a total of 1067 performances. Being so long, I'm not even going to tuck him into a collapsible note as well. We'll just have a sneak peek.
+
+```{r}
+tbl_perfs |>
+  head()
+```
+
