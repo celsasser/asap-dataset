@@ -1,7 +1,4 @@
-import {
-	format,
-	FormatterRow
-} from "fast-csv"
+import {format, FormatterRow} from "fast-csv"
 import {
 	MidiIoEvent,
 	MidiIoEventSubtype,
@@ -23,15 +20,8 @@ import {
 	formatTimeSignatureValuePretty,
 	formatTimeSignatureValueRaw
 } from "./format";
-import {
-	calculateNoteDensity,
-	calculateNoteInterval
-} from "./metrics";
-import {
-	MidiIoEventAbs,
-	MidiIoEventSubtypeExt,
-	MidiIoTrackAbs
-} from "./types";
+import {calculateNoteDensity, calculateNoteInterval} from "./metrics";
+import {MidiIoEventAbs, MidiIoEventSubtypeExt, MidiIoTrackAbs} from "./types";
 import {round} from "./utils";
 
 /**
@@ -399,7 +389,7 @@ async function writeCSV(path: string, rect: FormatterRow): Promise<void> {
 			headers: (encodeWidth === EncodeWidth.Narrow)
 				? ["type", "tickOffset", "tickLength", "valueRaw", "valuePretty", "canonical", "density", "interval"]
 				: ["type", "tickOffset", "tickLength", "valueRaw", "valuePretty", "canonical", "density", "interval", "tempo", "timeSignature", "keySignature"],
-			quoteColumns: [false, false, false, false, false, false, false]
+			quoteColumns: false
 		});
 		streamCsv.pipe(streamFile);
 		rect.forEach((row: FormatterRow) => streamCsv.write(row));
