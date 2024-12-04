@@ -11,13 +11,35 @@ library(tidyverse)
 source("wrangle.R")
 ```
 
-
-
 ## Overview
+todo: start with your proposal
 
+### What is MIDI?
+MIDI stands for Musical Instrument Digital Interface. It is a protocol that allows electronic musical instruments, computers, and other devices to communicate with each other. MIDI data is a series of messages that tell a device what notes to play, how loud to play them, and when to play them. The protocol also includes messages that manipulate the playback instrument's properties, creating effects such as pitch-bend, modulation, volume changes, etc.. MIDI files are a way of storing this data so that it can be played back on different devices. MIDI files are not audio files; they do not contain sound. Instead, they contain instructions on how to play a piece of music. This, in my opinion, is what makes them dreamy to work with. Because they are reduced to their most fundamental form, they are easy to manipulate and analyze.
+
+todo: add an excerpt from a midi file and include an excerpt of the same piece being performed by a human.
 
 ## Manifest
-It's not a ship's log, so I don't know if `manifest` the best description of the catalog (which might be a better word). But I couldn't think of a better, short term for it, so I'm sticking with it. The manifest is a CSV file that contains metadata about the performances and scores of the pieces in the dataset. The metadata includes the composer, the year they were born and died, the title of the piece, and the path to the CSV file that contains the data. The data in the CSV files are the performances and scores of the pieces. The performances are the actual recordings of the pieces, and the scores are the sheet music of the pieces. The manifest is the key to the dataset. It tells us where to find the data and how to interpret it. And that is where we shall start.
+It's not a ship's log, so I don't know if "manifest" is the best description of the file which manages metadata for this repository. But I couldn't think of a better, short term for it, so I'm sticking with manifest. The manifest is a CSV file called [metadata.csv](../../metadata.csv). It contains composer information, the composition title, the performer who performed the performance, the score of the composition and more. We were primarily concerned with the following elements of data:
+
+| Property | Description | Variable | Type |
+| --- | --- | --- | --- |
+| Composer's name | Last name | `composer` | `string` |
+| Composer's birth year | As per Wikipedia | `year_born` | `integer` |
+| Composer's death year | As per Wikipedia | `year_died` | `integer` |
+| Composition title | | `title` | `string` |
+| The performer | Extracted from `midi_performance` | `performer` | `string` |
+| The score | Relative path to MIDI file | `midi_score` | `string` |
+| The performance | Relative path to MIDI file | `midi_performance` | `string` |
+| The score CSV | Relative path to CSV file | `csv_score` | `string` |
+| The performance CSV | Relative path to CSV file | `csv_performance` | `string` |
+
+:::{.callout-note}
+### Performance vs. Score
+The performance and score are very closely related, but they are not the same. The score is the composition as written by the composer. The performance is the composition as played by the performer. Classical is a very structured genre, but the performance of it is very expressive. It's difficult to reproduce it in it's entirety with metadata. Where the tempo, key-signature and time-signature are meaningful in the score, they are meaningless in the performances in this repository. According to their metadata they all look as if the were written in 4/4, the key of C and at 120 BPM. This is not the case. The performances are all unique and expressive. The score is the blueprint, the performance is the building.
+:::
+
+The manifest is the key to the dataset. It tells us where to find the data and how to interpret it. And that is where we shall start.
 
 ### Load
 ```{r}
@@ -28,19 +50,7 @@ tbl_perfs <- tbl_manifest$perfs
 
 Let's get an idea of what their insides look like.
 
-### Scores
-
-This is a list of 235 scores. It's long but I think it gives an excellent overview of the dataset. So I'm going to tuck it into a collapsible note. I'll determine his fate later.
-
-:::{.callout-note collapse="false"}
-#### Compositions
-```{r}
-tbl_scores |>
-  select(-path) |>
-  kable()
-```
-:::
-
+### Composers
 ```{r}
 tbl_scores |>
   nest_by(composer, year_born, year_died) |>
@@ -49,25 +59,47 @@ tbl_scores |>
   ggplot(mapping = aes(x = year_born, y = composer, color = composer)) +
   geom_segment(mapping = aes(xend = year_died), linewidth = 6, show.legend = FALSE) +
   labs(
-    title = "Composers' Lifespans", 
+    title = "Composers and their Lifespans", 
     x = "Lifetime", 
     y = "Composer"
   )
   
 ```
 
+### Scores
+
+Follows is a list of all 235 scores in the repository. It's long but I think it gives an excellent overview of the dataset. So I'm going to tuck it into a collapsible note. I shall determine his fate later.
+
+:::{.callout-note collapse="false"}
+#### Compositions
+```{r}
+tbl_scores |>
+  select(id:title) |>
+  kable()
+```
+:::
+
 
 ### Performances
-There are a total of 1067 performances. Being so long, I'm not going to tuck him into a collapsible note as well. We'll just have a sneak peek.
+There are a total of 1067 performances. Being so long, I'm not going to tuck him into a collapsible note. Rather, let's zoom in on a single composition; let's see who has performed "Fugue bwv 846" by Bach. 
 
 ```{r}
 tbl_perfs |>
-  head() |>
+  filter(title == "Fugue bwv 846") |>
+  select(id, composer, title, performer) |>
   kable()
 ```
 
-todo: create a plot of performance to performer: composition on the x-axis, performer on the y-axis.
+There is only one performer for "Fugue bwv 846" in the dataset, so let's go with a juicier one, "Fugue bwv 848"
 
+```{r}
+tbl_perfs |>
+  filter(title == "Fugue bwv 848") |>
+  select(id, composer, title, performer) |>
+  kable()
+```
+
+Here ends our brief glimpse into the dataset. We shall now delve into the music data itself.
 
 ## Music
 

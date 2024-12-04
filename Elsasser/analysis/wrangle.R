@@ -22,7 +22,8 @@ get_asap_root <- function() {
 load_manifest <- function(root = get_asap_root()) {
   manifest_path <- file.path(root, "metadata.csv")
   # we are adding an ID so that we can join performances and scores to their manifest.
-  tbl_manifest <- read_csv(manifest_path, show_col_types = FALSE)
+  tbl_manifest <- read_csv(manifest_path, show_col_types = FALSE) |>
+    mutate(title = str_replace_all(title, "_", " "))
   tbl_perfs <- tbl_manifest |>
     mutate(id = row_number()) |>
     rename(path = csv_performance) |>
@@ -38,7 +39,6 @@ load_manifest <- function(root = get_asap_root()) {
     rename(path = csv_score) |>
     # reorder so that `id` is in the first column
     select(id, composer, year_born, year_died, title, performer, path)
-
   list(perfs = tbl_perfs, scores = tbl_scores)
 }
 
