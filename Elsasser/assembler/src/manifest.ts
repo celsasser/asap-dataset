@@ -48,11 +48,11 @@ async function updateMidiFileList(pathCSV: string): Promise<void> {
 	if (csvData.header.indexOf("csv_performance") < 0) {
 		csvData.header.push("csv_performance");
 	}
-	if (csvData.header.indexOf("yearBorn") < 0) {
-		csvData.header.splice(csvData.header.indexOf("composer") + 1, 0, "yearBorn");
+	if (csvData.header.indexOf("year_born") < 0) {
+		csvData.header.splice(csvData.header.indexOf("composer") + 1, 0, "year_born");
 	}
-	if (csvData.header.indexOf("yearDied") < 0) {
-		csvData.header.splice(csvData.header.indexOf("yearBorn") + 1, 0, "yearDied");
+	if (csvData.header.indexOf("year_died") < 0) {
+		csvData.header.splice(csvData.header.indexOf("year_born") + 1, 0, "year_died");
 	}
 	return new Promise((resolve, reject) => {
 		writeToPath(pathCSV, csvData.data, {headers: csvData.header})
