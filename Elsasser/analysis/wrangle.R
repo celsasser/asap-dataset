@@ -16,6 +16,7 @@ get_asap_root <- function() {
 #' a unit, because they are very different animals. This function is going to
 #' do some wrangling and separate them into two separate dataframes and
 #' eliminate the redundancy.
+#'
 #' @param root the root of the ASAP project
 #' @return a named `list` with two `tibbles`: `perfs` and `scores`
 load_manifest <- function(root = get_asap_root()) {
@@ -25,13 +26,18 @@ load_manifest <- function(root = get_asap_root()) {
   tbl_perfs <- tbl_manifest |>
     mutate(id = row_number()) |>
     rename(path = csv_performance) |>
-    select(id, composer, yearBorn, yearDied, title, performer, path)
+    select(id, composer, year_born, year_died, title, performer, path)
   tbl_scores <- tbl_manifest |>
-    distinct(composer, yearBorn, yearDied, title, csv_score) |>
-    mutate(id = row_number()) |>
+    distinct(composer, year_born, year_died, title, csv_score) |>
+    mutate(
+      id = row_number(),
+      # There are no performers for scores. Nonetheless, we are adding `performer`
+      # to scores so that our DF is compatible and interchangeable with `perfs`.
+      performer = NA,
+    ) |>
     rename(path = csv_score) |>
     # reorder so that `id` is in the first column
-    select(id, composer, yearBorn, yearDied, title, path)
+    select(id, composer, year_born, year_died, title, performer, path)
 
   list(perfs = tbl_perfs, scores = tbl_scores)
 }
@@ -45,7 +51,7 @@ load_manifest <- function(root = get_asap_root()) {
 #'
 #' @param df all or part of the `perfs` or `scores` dataframe.
 #' @return one song `tibble` per row in `df`. We have joined each row with `df`
-#'  so that they carry the `id', `composer`, `yearBorn`, `yearDied`, `title` and
+#'  so that they carry the `id', `composer`, `year_born`, `year_died`, `title` and
 #'  `performer` (if a performance) in addition to the music variables.
 load_music <- function(df) {
   pmap(df, function(id, path, ...) {
@@ -56,19 +62,22 @@ load_music <- function(df) {
     # A bigger reason I didn't include it as a variable is size. The catalog is
     # getting chunky. But it's in there as a row. Let's get him 'cuz it's
     # important metadata if one is going to do music math with ticks.
-    ticksPerQuarter <- tbl_song |>
-      filter(type == "ticksPerQuarter") |>
-      select(valueRaw) |>
-      mutate(valueRaw = as.integer(valueRaw))
+    ticks_per_quarter <- tbl_song |>
+      filter(type == "ticks_per_quarter") |>
+      select(value_raw) |>
+      mutate(value_raw = as.integer(value_raw))
     # now we can load the music
     tbl_song |>
       filter(type == "note") |>
       mutate(
         id = id,
-        ticksPerQuarter = ticksPerQuarter$valueRaw
+        note = parse_integer(str_match(value_raw, "([0-9]+)")[, 2]),
+        velocity = parse_integer(str_match(value_raw, ":([0-9]+)")[, 2]),
+        ticks_per_quarter = ticks_per_quarter$value_raw
       ) |>
       inner_join(df, by = "id") |>
-      select(-path)
+      select(id, composer:title, performer, type, tick_offset, tick_length,
+        note, velocity, value_pretty:key_signature, ticks_per_quarter)
   })
 }
 

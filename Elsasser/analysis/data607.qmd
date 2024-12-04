@@ -30,18 +30,35 @@ Let's get an idea of what their insides look like.
 
 ### Scores
 
-This is a list of 235 scores. It's long but I think it give an excellent overview of the dataset. So I'm going to tuck it into a collapsible note. I'll determine his fate later.
+This is a list of 235 scores. It's long but I think it gives an excellent overview of the dataset. So I'm going to tuck it into a collapsible note. I'll determine his fate later.
 
-:::{.callout-note collapse=false}
+:::{.callout-note collapse="false"}
 #### Compositions
 ```{r}
 tbl_scores |>
+  select(-path) |>
   kable()
 ```
 :::
 
+```{r}
+tbl_scores |>
+  nest_by(composer, year_born, year_died) |>
+  arrange(year_born) |>
+  mutate(composer = factor(composer)) |>
+  ggplot(mapping = aes(x = year_born, y = composer, color = composer)) +
+  geom_segment(mapping = aes(xend = year_died), linewidth = 6, show.legend = FALSE) +
+  labs(
+    title = "Composers' Lifespans", 
+    x = "Lifetime", 
+    y = "Composer"
+  )
+  
+```
+
+
 ### Performances
-There are a total of 1067 performances. Being so long, I'm not even going to tuck him into a collapsible note as well. We'll just have a sneak peek.
+There are a total of 1067 performances. Being so long, I'm not going to tuck him into a collapsible note as well. We'll just have a sneak peek.
 
 ```{r}
 tbl_perfs |>
