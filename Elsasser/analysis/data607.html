@@ -5057,38 +5057,268 @@ Compositions
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>tbl_scores <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 6
-     id composer yearBorn yearDied title         path                           
-  &lt;int&gt; &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;                          
-1     1 Bach         1685     1750 Fugue_bwv_846 Bach/Fugue/bwv_846/midi_score.…
-2     2 Bach         1685     1750 Fugue_bwv_848 Bach/Fugue/bwv_848/midi_score.…
-3     3 Bach         1685     1750 Fugue_bwv_854 Bach/Fugue/bwv_854/midi_score.…
-4     4 Bach         1685     1750 Fugue_bwv_856 Bach/Fugue/bwv_856/midi_score.…
-5     5 Bach         1685     1750 Fugue_bwv_857 Bach/Fugue/bwv_857/midi_score.…
-6     6 Bach         1685     1750 Fugue_bwv_858 Bach/Fugue/bwv_858/midi_score.…</code></pre>
-</div>
-</div>
 </section>
 <section id="performances" class="level3">
 <h3 class="anchored" data-anchor-id="performances">Performances</h3>
 <p>There are a total of 1067 performances. Being so long, I’m not even going to tuck him into a collapsible note as well. We’ll just have a sneak peek.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>tbl_perfs <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 6
-     id composer yearBorn yearDied title         path                           
-  &lt;int&gt; &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;                          
-1     1 Bach         1685     1750 Fugue_bwv_846 Bach/Fugue/bwv_846/Shi05M.csv  
-2     2 Bach         1685     1750 Fugue_bwv_848 Bach/Fugue/bwv_848/Denisova06M…
-3     3 Bach         1685     1750 Fugue_bwv_848 Bach/Fugue/bwv_848/Lee01M.csv  
-4     4 Bach         1685     1750 Fugue_bwv_848 Bach/Fugue/bwv_848/LeeSH01M.csv
-5     5 Bach         1685     1750 Fugue_bwv_848 Bach/Fugue/bwv_848/Lin04M.csv  
-6     6 Bach         1685     1750 Fugue_bwv_848 Bach/Fugue/bwv_848/Lou01M.csv  </code></pre>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>tbl_perfs <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 3%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 15%">
+<col style="width: 11%">
+<col style="width: 39%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">id</th>
+<th style="text-align: left;">composer</th>
+<th style="text-align: right;">yearBorn</th>
+<th style="text-align: right;">yearDied</th>
+<th style="text-align: left;">title</th>
+<th style="text-align: left;">performer</th>
+<th style="text-align: left;">path</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">Bach</td>
+<td style="text-align: right;">1685</td>
+<td style="text-align: right;">1750</td>
+<td style="text-align: left;">Fugue_bwv_846</td>
+<td style="text-align: left;">Shi</td>
+<td style="text-align: left;">Bach/Fugue/bwv_846/Shi05M.csv</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">Bach</td>
+<td style="text-align: right;">1685</td>
+<td style="text-align: right;">1750</td>
+<td style="text-align: left;">Fugue_bwv_848</td>
+<td style="text-align: left;">Denisova</td>
+<td style="text-align: left;">Bach/Fugue/bwv_848/Denisova06M.csv</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">Bach</td>
+<td style="text-align: right;">1685</td>
+<td style="text-align: right;">1750</td>
+<td style="text-align: left;">Fugue_bwv_848</td>
+<td style="text-align: left;">Lee</td>
+<td style="text-align: left;">Bach/Fugue/bwv_848/Lee01M.csv</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Bach</td>
+<td style="text-align: right;">1685</td>
+<td style="text-align: right;">1750</td>
+<td style="text-align: left;">Fugue_bwv_848</td>
+<td style="text-align: left;">LeeSH</td>
+<td style="text-align: left;">Bach/Fugue/bwv_848/LeeSH01M.csv</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Bach</td>
+<td style="text-align: right;">1685</td>
+<td style="text-align: right;">1750</td>
+<td style="text-align: left;">Fugue_bwv_848</td>
+<td style="text-align: left;">Lin</td>
+<td style="text-align: left;">Bach/Fugue/bwv_848/Lin04M.csv</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">Bach</td>
+<td style="text-align: right;">1685</td>
+<td style="text-align: right;">1750</td>
+<td style="text-align: left;">Fugue_bwv_848</td>
+<td style="text-align: left;">Lou</td>
+<td style="text-align: left;">Bach/Fugue/bwv_848/Lou01M.csv</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>todo: create a plot of performance to performer: composition on the x-axis, performer on the y-axis.</p>
+</section>
+</section>
+<section id="music" class="level2">
+<h2 class="anchored" data-anchor-id="music">Music</h2>
+<section id="load-1" class="level3">
+<h3 class="anchored" data-anchor-id="load-1">Load</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>tbl_test <span class="ot">&lt;-</span> <span class="fu">slice_head</span>(tbl_scores, <span class="at">n =</span> <span class="dv">2</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>tbl_fugue_bwv_846 <span class="ot">&lt;-</span> <span class="fu">load_music</span>(tbl_test)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>tbl_fugue_bwv_846s <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(tbl_fugue_bwv_846)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>tbl_fugue_bwv_846s <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">|&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 2%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 5%">
+<col style="width: 7%">
+<col style="width: 5%">
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 3%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 1%">
+<col style="width: 9%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">type</th>
+<th style="text-align: right;">tickOffset</th>
+<th style="text-align: right;">tickLength</th>
+<th style="text-align: left;">valueRaw</th>
+<th style="text-align: left;">valuePretty</th>
+<th style="text-align: left;">canonical</th>
+<th style="text-align: right;">density</th>
+<th style="text-align: left;">interval</th>
+<th style="text-align: right;">tempo</th>
+<th style="text-align: left;">timeSignature</th>
+<th style="text-align: left;">keySignature</th>
+<th style="text-align: right;">id</th>
+<th style="text-align: right;">ticksPerQuarter</th>
+<th style="text-align: left;">composer</th>
+<th style="text-align: right;">yearBorn</th>
+<th style="text-align: right;">yearDied</th>
+<th style="text-align: left;">title</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">note</td>
+<td style="text-align: right;">240</td>
+<td style="text-align: right;">239</td>
+<td style="text-align: left;">60:80</td>
+<td style="text-align: left;">C4</td>
+<td style="text-align: left;">C4</td>
+<td style="text-align: right;">0.1369</td>
+<td style="text-align: left;">M2</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: left;">4/4</td>
+<td style="text-align: left;">C Major</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">480</td>
+<td style="text-align: left;">Bach</td>
+<td style="text-align: right;">1685</td>
+<td style="text-align: right;">1750</td>
+<td style="text-align: left;">Fugue_bwv_846</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">note</td>
+<td style="text-align: right;">480</td>
+<td style="text-align: right;">239</td>
+<td style="text-align: left;">62:80</td>
+<td style="text-align: left;">D4</td>
+<td style="text-align: left;">D4</td>
+<td style="text-align: right;">0.1369</td>
+<td style="text-align: left;">M2</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: left;">4/4</td>
+<td style="text-align: left;">C Major</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">480</td>
+<td style="text-align: left;">Bach</td>
+<td style="text-align: right;">1685</td>
+<td style="text-align: right;">1750</td>
+<td style="text-align: left;">Fugue_bwv_846</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">note</td>
+<td style="text-align: right;">720</td>
+<td style="text-align: right;">239</td>
+<td style="text-align: left;">64:80</td>
+<td style="text-align: left;">E4</td>
+<td style="text-align: left;">E4</td>
+<td style="text-align: right;">0.0913</td>
+<td style="text-align: left;">m2</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: left;">4/4</td>
+<td style="text-align: left;">C Major</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">480</td>
+<td style="text-align: left;">Bach</td>
+<td style="text-align: right;">1685</td>
+<td style="text-align: right;">1750</td>
+<td style="text-align: left;">Fugue_bwv_846</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">note</td>
+<td style="text-align: right;">960</td>
+<td style="text-align: right;">359</td>
+<td style="text-align: left;">65:80</td>
+<td style="text-align: left;">F4</td>
+<td style="text-align: left;">F4</td>
+<td style="text-align: right;">0.1826</td>
+<td style="text-align: left;">M2</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: left;">4/4</td>
+<td style="text-align: left;">C Major</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">480</td>
+<td style="text-align: left;">Bach</td>
+<td style="text-align: right;">1685</td>
+<td style="text-align: right;">1750</td>
+<td style="text-align: left;">Fugue_bwv_846</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">note</td>
+<td style="text-align: right;">1320</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: left;">67:80</td>
+<td style="text-align: left;">G4</td>
+<td style="text-align: left;">G4</td>
+<td style="text-align: right;">0.1826</td>
+<td style="text-align: left;">M2</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: left;">4/4</td>
+<td style="text-align: left;">C Major</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">480</td>
+<td style="text-align: left;">Bach</td>
+<td style="text-align: right;">1685</td>
+<td style="text-align: right;">1750</td>
+<td style="text-align: left;">Fugue_bwv_846</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">note</td>
+<td style="text-align: right;">1380</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: left;">65:80</td>
+<td style="text-align: left;">F4</td>
+<td style="text-align: left;">F4</td>
+<td style="text-align: right;">0.1369</td>
+<td style="text-align: left;">m2</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: left;">4/4</td>
+<td style="text-align: left;">C Major</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">480</td>
+<td style="text-align: left;">Bach</td>
+<td style="text-align: right;">1685</td>
+<td style="text-align: right;">1750</td>
+<td style="text-align: left;">Fugue_bwv_846</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </section>

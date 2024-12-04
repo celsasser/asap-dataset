@@ -40,17 +40,27 @@ tbl_scores |>
 ```
 :::
 
-
-```{r}
-tbl_scores |>
-  head()
-```
-
 ### Performances
 There are a total of 1067 performances. Being so long, I'm not even going to tuck him into a collapsible note as well. We'll just have a sneak peek.
 
 ```{r}
 tbl_perfs |>
-  head()
+  head() |>
+  kable()
+```
+
+todo: create a plot of performance to performer: composition on the x-axis, performer on the y-axis.
+
+
+## Music
+
+### Load
+```{r}
+tbl_test <- slice_head(tbl_scores, n = 2)
+tbl_fugue_bwv_846 <- load_music(tbl_test)
+tbl_fugue_bwv_846s <- bind_rows(tbl_fugue_bwv_846)
+tbl_fugue_bwv_846s |>
+  head() |>
+  kable()
 ```
 
