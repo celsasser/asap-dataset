@@ -86,11 +86,11 @@ load_music <- function(df) {
 #' fingers crossed :).
 #'
 #' @param df the `perfs` or `scores` dataframe.
-#' @param composer the composer to filter by.
+#' @param .composer the composer to filter by.
 #' @return see `load_music` for return information.
-load_music_by_composer <- function(df, composer) {
+load_music_by_composer <- function(df, .composer) {
   df |>
-    filter(composer == composer) |>
+    filter(composer == .composer) |>
     load_music()
 }
 
@@ -99,11 +99,11 @@ load_music_by_composer <- function(df, composer) {
 #' hopefully :(.
 #'
 #' @param df the `perfs` or `scores` dataframe.
-#' @param title the title of the song to filter by.
+#' @param .title the title of the song to filter by.
 #' @return see `load_music` for return information.
-load_music_by_title <- function(df, title) {
+load_music_by_title <- function(df, .title) {
   df |>
-    filter(title == title) |>
+    filter(title == .title) |>
     load_music()
 }
 
@@ -111,11 +111,11 @@ load_music_by_title <- function(df, title) {
 #' of it. We will do the filtering and return the dataframes you are looking for.
 #'
 #' @param df the `perfs` dataframe.
-#' @param performer the performer to filter by.
+#' @param .performer the performer to filter by.
 #' @return see `load_music` for return information.
-load_music_by_performer <- function(df, performer) {
+load_music_by_performer <- function(df, .performer) {
   df |>
-    filter(performer == performer) |>
+    filter(performer == .performer) |>
     load_music()
 }
 
