@@ -113,22 +113,24 @@ Music is stored in various ways in the ASAP repository. The format that we have 
 | --- | --- | --- |
 | `id` | The composition ID | `integer` |
 | `composer` | The composer of the piece | `string` |
-| `year_born` | Composer's birth year (Wikipedia) | `integer` |
-| `year_died` | Composer's death year (Wikipedia) | `integer` |
-| `title` | Composition's title | `string` |
-| `performer` | The performer. Extracted from `midi_performance`. `NA` for scores. | `string`\|`NA` |
-| `type` | The type of data | `string` |
-| `tick_offset` | The number of MIDI ticks from the beginning of the piece | `integer` |
-| `tick_length` | The duration of the note in MIDI ticks | `integer` |
-| `note` | The MIDI value of a note | `integer` |
-| `velocity` | The velocity of the note | `integer` |
-| `value_pretty` | The named representation of the note. Matches key-signature's not spelling | `string` |
+| `year_born` | The composer's birth year (Wikipedia) | `integer` |
+| `year_died` | The composer's death year (Wikipedia) | `integer` |
+| `title` | The composition's title | `string` |
+| `performer` | The performer. Extracted from `midi_performance`. `NA` for scores | `string`\|`NA` |
+| `type` | The type of data. Music is all `note` | `string` |
+| `time_offset` | The number of seconds from the beginning | `float` |
+| `time_duration` | The duration in seconods | `float` |
+| `tick_offset` | The number of MIDI ticks from the beginning | `integer` |
+| `tick_duration` | The duration in MIDI ticks | `integer` |
+| `note` | The MIDI value of the note | `integer` |
+| `velocity` | The velocity of the note, [0, 1] | `integer` |
+| `pretty` | The named representation of the note. Matches key-signature's spelling | `string` |
 | `canonical` | The canonical representation of the note. We always use the flat equivalent | `string` |
 | `density` | How dense notes are in the vicinity of this note. | `float` |
 | `interval` | The interval between this note and the following note | `string` |
 | `tempo` | The tempo of the current point in the piece | `integer` |
-| `key_signature` | The key signature of the current point in the piece | `string` |
-| `time_signature` | The time signature of the current point in the piece | `string` |
+| `key_signature` | The key signature at this point in the piece | `string` |
+| `time_signature` | The time signature at this point in the piece | `string` |
 | `ticks_per_quarter` | The number of ticks in a quarter note | `integer` |
 
 

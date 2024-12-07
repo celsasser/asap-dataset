@@ -2,6 +2,10 @@
 library(purrr)
 library(tidyverse)
 
+#############
+# Public API
+#############
+
 #' Get the root of the ASAP project
 #' @return normalized path
 get_asap_root <- function() {
@@ -62,22 +66,42 @@ load_music <- function(df) {
     # A bigger reason I didn't include it as a variable is size. The catalog is
     # getting chunky. But it's in there as a row. Let's get him 'cuz it's
     # important metadata if one is going to do music math with ticks.
-    ticks_per_quarter <- tbl_song |>
+    tbl_tpq <- tbl_song |>
       filter(type == "ticks_per_quarter") |>
       select(value_raw) |>
       mutate(value_raw = as.integer(value_raw))
-    # now we can load the music
+    # now we can cultivate the CVS notation
     tbl_song |>
       filter(type == "note") |>
+      # why in the world did I name it tick_length!?
+      rename(
+        tick_duration = tick_length,
+        pretty = value_pretty
+      ) |>
       mutate(
         id = id,
         note = parse_integer(str_match(value_raw, "([0-9]+)")[, 2]),
-        velocity = parse_integer(str_match(value_raw, ":([0-9]+)")[, 2]),
-        ticks_per_quarter = ticks_per_quarter$value_raw
+        # velocity is [0, 127]. We are normalizing it
+        velocity = parse_integer(str_match(value_raw, ":([0-9]+)")[, 2]) / 127,
+        ticks_per_quarter = tbl_tpq$value_raw,
+        time_offset = tick_offset_to_seconds(tick_offset, tempo, ticks_per_quarter),
+        time_duration = tick_duration_to_seconds(tick_duration, tempo, ticks_per_quarter)
       ) |>
       inner_join(df, by = "id") |>
-      select(id, composer:title, performer, type, tick_offset, tick_length,
-        note, velocity, value_pretty:key_signature, ticks_per_quarter)
+        select(
+          id,
+          composer:title,
+          performer,
+          type,
+          time_offset,
+          time_duration,
+          tick_offset,
+          tick_duration,
+          note,
+          velocity,
+          pretty:key_signature,
+          ticks_per_quarter
+        )
   })
 }
 
@@ -119,3 +143,26 @@ load_music_by_performer <- function(df, .performer) {
     load_music()
 }
 
+##############
+# Internal API
+##############
+
+tick_offset_to_seconds <- function(tick_offset, ticks_per_quarter, tempo) {
+  # I am not sure whether the ticks_per_quarter is the same for all time-signatures?
+  # I am going to assume it is. Otherwise, TPQ would get kooky
+  time_offset <- numeric(length(tick_offset))
+  for (i in 2:length(tick_offset)) {
+    tick_delta <- tick_offset[i] - tick_offset[i - 1]
+    time_offset[i] <- time_offset[i - 1] +
+      (60 / tempo[i - 1]) * (tick_delta / ticks_per_quarter[i])
+  }
+  return(time_offset)
+}
+
+tick_duration_to_seconds <- function(tick_duration, ticks_per_quarter, tempo) {
+  time_duration <- numeric(length(tick_duration))
+  for (i in 1:length(tick_duration)) {
+    time_duration[i] <- (60 / tempo[i]) * (tick_duration[i] / ticks_per_quarter[i])
+  }
+  return(time_duration)
+}

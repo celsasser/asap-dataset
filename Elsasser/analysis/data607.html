@@ -5066,52 +5066,62 @@ Compositions
 </tr>
 <tr class="odd">
 <td><code>year_born</code></td>
-<td>Composer’s birth year (Wikipedia)</td>
+<td>The composer’s birth year (Wikipedia)</td>
 <td><code>integer</code></td>
 </tr>
 <tr class="even">
 <td><code>year_died</code></td>
-<td>Composer’s death year (Wikipedia)</td>
+<td>The composer’s death year (Wikipedia)</td>
 <td><code>integer</code></td>
 </tr>
 <tr class="odd">
 <td><code>title</code></td>
-<td>Composition’s title</td>
+<td>The composition’s title</td>
 <td><code>string</code></td>
 </tr>
 <tr class="even">
 <td><code>performer</code></td>
-<td>The performer. Extracted from <code>midi_performance</code>. <code>NA</code> for scores.</td>
+<td>The performer. Extracted from <code>midi_performance</code>. <code>NA</code> for scores</td>
 <td><code>string</code>|<code>NA</code></td>
 </tr>
 <tr class="odd">
 <td><code>type</code></td>
-<td>The type of data</td>
+<td>The type of data. Music is all <code>note</code></td>
 <td><code>string</code></td>
 </tr>
 <tr class="even">
+<td><code>time_offset</code></td>
+<td>The number of seconds from the beginning</td>
+<td><code>float</code></td>
+</tr>
+<tr class="odd">
+<td><code>time_duration</code></td>
+<td>The duration in seconods</td>
+<td><code>float</code></td>
+</tr>
+<tr class="even">
 <td><code>tick_offset</code></td>
-<td>The number of MIDI ticks from the beginning of the piece</td>
+<td>The number of MIDI ticks from the beginning</td>
 <td><code>integer</code></td>
 </tr>
 <tr class="odd">
-<td><code>tick_length</code></td>
-<td>The duration of the note in MIDI ticks</td>
+<td><code>tick_duration</code></td>
+<td>The duration in MIDI ticks</td>
 <td><code>integer</code></td>
 </tr>
 <tr class="even">
 <td><code>note</code></td>
-<td>The MIDI value of a note</td>
+<td>The MIDI value of the note</td>
 <td><code>integer</code></td>
 </tr>
 <tr class="odd">
 <td><code>velocity</code></td>
-<td>The velocity of the note</td>
+<td>The velocity of the note, [0, 1]</td>
 <td><code>integer</code></td>
 </tr>
 <tr class="even">
-<td><code>value_pretty</code></td>
-<td>The named representation of the note. Matches key-signature’s not spelling</td>
+<td><code>pretty</code></td>
+<td>The named representation of the note. Matches key-signature’s spelling</td>
 <td><code>string</code></td>
 </tr>
 <tr class="odd">
@@ -5136,12 +5146,12 @@ Compositions
 </tr>
 <tr class="odd">
 <td><code>key_signature</code></td>
-<td>The key signature of the current point in the piece</td>
+<td>The key signature at this point in the piece</td>
 <td><code>string</code></td>
 </tr>
 <tr class="even">
 <td><code>time_signature</code></td>
-<td>The time signature of the current point in the piece</td>
+<td>The time signature at this point in the piece</td>
 <td><code>string</code></td>
 </tr>
 <tr class="odd">
@@ -5163,23 +5173,25 @@ Compositions
 <colgroup>
 <col style="width: 1%">
 <col style="width: 4%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 7%">
-<col style="width: 5%">
-<col style="width: 2%">
-<col style="width: 6%">
-<col style="width: 6%">
-<col style="width: 2%">
+<col style="width: 4%">
 <col style="width: 4%">
 <col style="width: 6%">
-<col style="width: 5%">
 <col style="width: 4%">
+<col style="width: 2%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 2%">
 <col style="width: 4%">
 <col style="width: 3%">
-<col style="width: 7%">
-<col style="width: 7%">
-<col style="width: 9%">
+<col style="width: 4%">
+<col style="width: 3%">
+<col style="width: 4%">
+<col style="width: 2%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 8%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -5190,11 +5202,13 @@ Compositions
 <th style="text-align: left;">title</th>
 <th style="text-align: left;">performer</th>
 <th style="text-align: left;">type</th>
+<th style="text-align: right;">time_offset</th>
+<th style="text-align: right;">time_duration</th>
 <th style="text-align: right;">tick_offset</th>
-<th style="text-align: right;">tick_length</th>
+<th style="text-align: right;">tick_duration</th>
 <th style="text-align: right;">note</th>
 <th style="text-align: right;">velocity</th>
-<th style="text-align: left;">value_pretty</th>
+<th style="text-align: left;">pretty</th>
 <th style="text-align: left;">canonical</th>
 <th style="text-align: right;">density</th>
 <th style="text-align: left;">interval</th>
@@ -5213,10 +5227,12 @@ Compositions
 <td style="text-align: left;">Fugue bwv 846</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">note</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.2489583</td>
 <td style="text-align: right;">240</td>
 <td style="text-align: right;">239</td>
 <td style="text-align: right;">60</td>
-<td style="text-align: right;">80</td>
+<td style="text-align: right;">0.6299213</td>
 <td style="text-align: left;">C4</td>
 <td style="text-align: left;">C4</td>
 <td style="text-align: right;">0.1369</td>
@@ -5234,10 +5250,12 @@ Compositions
 <td style="text-align: left;">Fugue bwv 846</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">note</td>
+<td style="text-align: right;">0.2500</td>
+<td style="text-align: right;">0.2489583</td>
 <td style="text-align: right;">480</td>
 <td style="text-align: right;">239</td>
 <td style="text-align: right;">62</td>
-<td style="text-align: right;">80</td>
+<td style="text-align: right;">0.6299213</td>
 <td style="text-align: left;">D4</td>
 <td style="text-align: left;">D4</td>
 <td style="text-align: right;">0.1369</td>
@@ -5255,10 +5273,12 @@ Compositions
 <td style="text-align: left;">Fugue bwv 846</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">note</td>
+<td style="text-align: right;">0.5000</td>
+<td style="text-align: right;">0.2489583</td>
 <td style="text-align: right;">720</td>
 <td style="text-align: right;">239</td>
 <td style="text-align: right;">64</td>
-<td style="text-align: right;">80</td>
+<td style="text-align: right;">0.6299213</td>
 <td style="text-align: left;">E4</td>
 <td style="text-align: left;">E4</td>
 <td style="text-align: right;">0.0913</td>
@@ -5276,10 +5296,12 @@ Compositions
 <td style="text-align: left;">Fugue bwv 846</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">note</td>
+<td style="text-align: right;">0.7500</td>
+<td style="text-align: right;">0.3739583</td>
 <td style="text-align: right;">960</td>
 <td style="text-align: right;">359</td>
 <td style="text-align: right;">65</td>
-<td style="text-align: right;">80</td>
+<td style="text-align: right;">0.6299213</td>
 <td style="text-align: left;">F4</td>
 <td style="text-align: left;">F4</td>
 <td style="text-align: right;">0.1826</td>
@@ -5297,10 +5319,12 @@ Compositions
 <td style="text-align: left;">Fugue bwv 846</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">note</td>
+<td style="text-align: right;">1.1250</td>
+<td style="text-align: right;">0.0614583</td>
 <td style="text-align: right;">1320</td>
 <td style="text-align: right;">59</td>
 <td style="text-align: right;">67</td>
-<td style="text-align: right;">80</td>
+<td style="text-align: right;">0.6299213</td>
 <td style="text-align: left;">G4</td>
 <td style="text-align: left;">G4</td>
 <td style="text-align: right;">0.1826</td>
@@ -5318,10 +5342,12 @@ Compositions
 <td style="text-align: left;">Fugue bwv 846</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">note</td>
+<td style="text-align: right;">1.1875</td>
+<td style="text-align: right;">0.0614583</td>
 <td style="text-align: right;">1380</td>
 <td style="text-align: right;">59</td>
 <td style="text-align: right;">65</td>
-<td style="text-align: right;">80</td>
+<td style="text-align: right;">0.6299213</td>
 <td style="text-align: left;">F4</td>
 <td style="text-align: left;">F4</td>
 <td style="text-align: right;">0.1369</td>
