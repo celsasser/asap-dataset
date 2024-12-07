@@ -1,6 +1,8 @@
 ---
 title: "DATA 607: Final Project"
 author: "Curtis Elsasser"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Setup
@@ -55,8 +57,8 @@ Let's get an idea of what their insides look like.
 
 ### Composers
 ```{r}
-#| fig.width: 8
-#| fig.height: 6
+#| fig-width: 8
+#| fig-height: 6
 tbl_scores |>
   nest_by(composer, year_born, year_died) |>
   arrange(year_born) |>
@@ -142,11 +144,21 @@ tbl_fugue_bwv_846 |>
   kable()
 ```
 
+```{r}
+tbl_fugue_bwv_848 <- load_music_by_title(tbl_perfs, "Fugue bwv 848") |>
+  bind_rows()
+```
+
+```{r}
+tbl_music_perfs <- load_music(tbl_perfs) |>
+  bind_rows()
+```
+
 
 ### Visualization
 ```{r}
-#| fig.width: 9
-#| fig.height: 6
+#| fig-width: 9
+#| fig-height: 6
 
 tbl_fugue_bwv_846 |>
   group_by(canonical) |>
@@ -173,8 +185,8 @@ tbl_fugue_bwv_846 |>
 ```
 
 ```{r}
-#| fig.width: 6
-#| fig.height: 5
+#| fig-width: 6
+#| fig-height: 5
 
 tbl_fugue_bwv_846 |>
   group_by(interval) |>
@@ -199,3 +211,57 @@ tbl_fugue_bwv_846 |>
   )
 
 ```
+
+
+```{r}
+#| fig-width: 10
+tbl_fugue_bwv_848 |>
+  ggplot(mapping = aes(x = time_offset, y = velocity, color = performer)) +
+  geom_line() +
+  labs(
+    title = str_c(
+      "Velocity in ",
+      tbl_fugue_bwv_846$title,
+      ", ",
+      tbl_fugue_bwv_846$key_signature,
+      ", ",
+      tbl_fugue_bwv_846$composer
+    ),
+    x = "Time",
+    y = "Velocity"
+  )
+
+  
+```
+
+```{r}
+#| fig-width: 10
+#| fig-height: 10
+tbl_fugue_bwv_848 |>
+  ggplot(mapping = aes(x = velocity, color = performer)) +
+  geom_histogram(bins = 30) +
+  labs(
+    title = str_c(
+      "Velocity histogram for ",
+      tbl_fugue_bwv_846$title,
+      ", ",
+      tbl_fugue_bwv_846$key_signature,
+      ", ",
+      tbl_fugue_bwv_846$composer
+    ),
+  ) +
+  facet_wrap(~performer)
+```
+
+```{r}
+#| warning: false
+#| fig-width: 10
+tbl_fugue_bwv_848 |>
+  group_by(performer, canonical) |>
+  summarise(
+    count = n()
+  ) |>
+  ggplot(mapping = aes(x = canonical, y = count, color = performer)) +
+    geom_col(position = "dodge")
+```
+

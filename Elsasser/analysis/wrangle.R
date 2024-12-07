@@ -1,4 +1,16 @@
-# We came, we saw and we wrangled.
+#' We came, we saw and we wrangled.
+#' This fella does a few things:
+#' 1. Loads the manifest:
+#'  - adds an id to the each row
+#'  - divides the catalog up into `perfs` and `scores`
+#'  - makes the title nicer to look at
+#'  - selects properties designed for data analysis
+#' 2. Loads songs in a few different flavors
+#'  - calculates `time_offset` and `time_duration`
+#'  - some variable name improvements
+#'  - joins to the manifest
+#'  - promotes ticks_per_quarter from a row to a column
+
 library(purrr)
 library(tidyverse)
 
@@ -160,9 +172,5 @@ tick_offset_to_seconds <- function(tick_offset, ticks_per_quarter, tempo) {
 }
 
 tick_duration_to_seconds <- function(tick_duration, ticks_per_quarter, tempo) {
-  time_duration <- numeric(length(tick_duration))
-  for (i in 1:length(tick_duration)) {
-    time_duration[i] <- (60 / tempo[i]) * (tick_duration[i] / ticks_per_quarter[i])
-  }
-  return(time_duration)
+  (60 / tempo) * (tick_duration / ticks_per_quarter)
 }
