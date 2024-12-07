@@ -85,9 +85,7 @@ load_music <- function(df) {
     # now we can cultivate the CVS notation
     tbl_song |>
       filter(type == "note") |>
-      # why in the world did I name it tick_length!?
       rename(
-        tick_duration = tick_length,
         pretty = value_pretty
       ) |>
       mutate(
