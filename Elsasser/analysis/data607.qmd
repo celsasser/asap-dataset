@@ -86,6 +86,24 @@ tbl_scores |>
 ```
 :::
 
+:::{.callout-note collapse="false"}
+#### Performers
+Performances by Performer. From most recordings to least
+```{r}
+tbl_top_performers <- tbl_perfs |>
+  group_by(performer) |>
+  summarise(n = n()) |>
+  arrange(desc(n)) |>
+  filter(n >= 10) |>
+  left_join(tbl_perfs, by = "performer") |>
+  arrange(desc(n))
+
+tbl_top_performers |>
+  select(performer:title) |>
+  kable()
+```
+:::
+
 
 ### Performances
 There are a total of 1067 performances. Being so long, I'm not going to tuck him into a collapsible note. Rather, let's zoom in on a single composition; let's see who has performed "Fugue bwv 846" by Bach. 
@@ -254,6 +272,28 @@ tbl_fugue_bwv_848 |>
 ```
 
 ```{r}
+#| fig-width: 10
+#| fig-height: 10
+tbl_fugue_bwv_848 |>
+  ggplot(mapping = aes(x = time_duration, color = performer)) +
+  geom_histogram(binwidth = 0.025) +
+  coord_cartesian(xlim = c(0, 1)) +
+  labs(
+    title = str_c(
+      "Note duration histogram for ",
+      tbl_fugue_bwv_846$title,
+      ", ",
+      tbl_fugue_bwv_846$key_signature,
+      ", ",
+      tbl_fugue_bwv_846$composer
+    ),
+  ) +
+  facet_wrap(~performer)
+
+```
+
+
+```{r}
 #| warning: false
 #| fig-width: 10
 tbl_fugue_bwv_848 |>
@@ -265,3 +305,130 @@ tbl_fugue_bwv_848 |>
     geom_col(position = "dodge")
 ```
 
+
+
+## Possibilities for Analysis
+
+1. Is there a difference in average note length over time?
+
+```{r}
+#| fig-width: 8
+#| fig-height: 10
+tbl_music_perfs |>
+  group_by(id) |>
+  summarise(
+    avg_note_duration = mean(time_duration)
+  ) |>
+  left_join(tbl_perfs, by = "id") |>
+  mutate(
+    year_middle = year_born + (year_died - year_born) / 2
+  ) |>
+  ggplot(mapping = aes(x = avg_note_duration, y = year_middle, color = composer)) +
+  geom_jitter() +
+  labs(
+    title = "Average Note Length by Composition",
+    x = "Average Note Duration",
+    y = "Approximate Year of Composition"
+  )
+
+```
+
+2. Is there a difference in average velocity over time?
+
+```{r}
+#| fig-width: 8
+#| fig-height: 10
+tbl_music_perfs |>
+  group_by(id) |>
+  summarise(
+    avg_velocity = mean(velocity)
+  ) |>
+  left_join(tbl_perfs, by = "id") |>
+  mutate(
+    year_middle = year_born + (year_died - year_born) / 2
+  ) |>
+  ggplot(mapping = aes(x = avg_velocity, y = year_middle, color = composer)) +
+  geom_jitter() +
+  labs(
+    title = "Average Note Length by Composition",
+    x = "Average Note Duration",
+    y = "Approximate Year of Composition"
+  )
+
+```
+
+3. Is there a difference in average note length by performer?
+```{r}
+#| fig-width: 8
+#| fig-height: 8
+tbl_fugue_bwv_848 |>
+  group_by(performer) |>
+  summarise(
+    avg_note_duration = mean(time_duration)
+  ) |>
+  ggplot(mapping = aes(x = avg_note_duration, y = performer, color = performer)) +
+  geom_col() +
+  labs(
+    title = "Average Note Duration by Performer",
+    x = "Average Note Duration",
+    y = "Performer"
+  )
+```
+
+
+4. Is there a difference in average note velocity by performer?
+```{r}
+#| fig-width: 8
+#| fig-height: 8
+tbl_fugue_bwv_848 |>
+  group_by(performer) |>
+  summarise(
+    avg_velocity = mean(velocity)
+  ) |>
+  ggplot(mapping = aes(x = avg_velocity, y = performer, color = performer)) +
+  geom_col() +
+  labs(
+    title = "Average Note Velocity by Performer",
+    x = "Average Note Velocity",
+    y = "Performer"
+  )
+```
+
+
+5. Is there a difference in note velocity variance by performer?
+```{r}
+#| fig-width: 8
+#| fig-height: 8
+tbl_fugue_bwv_848 |>
+  group_by(performer) |>
+  summarise(
+    v_velocity = var(velocity)
+  ) |>
+  ggplot(mapping = aes(x = v_velocity, y = performer, color = performer)) +
+  geom_col() +
+  labs(
+    title = "Note Velocity Variance by Performer",
+    x = "Note Velocity Variance",
+    y = "Performer"
+  )
+```
+
+6. Is there a difference in note duration variance by performer?
+```{r}
+#| fig-width: 8
+#| fig-height: 8
+tbl_fugue_bwv_848 |>
+  group_by(performer) |>
+  summarise(
+    v_time_duration = var(time_duration)
+  ) |>
+  ggplot(mapping = aes(x = v_time_duration, y = performer, color = performer)) +
+  geom_col() +
+  labs(
+    title = "Note Duration Variance by Performer",
+    x = "Note Duration Variance",
+    y = "Performer"
+  )
+```
+
+7. Is there a difference in note duration variability over time?
