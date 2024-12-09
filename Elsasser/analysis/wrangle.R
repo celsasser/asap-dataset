@@ -40,9 +40,10 @@ load_manifest <- function(root = get_asap_root()) {
   # we are adding an ID so that we can join performances and scores to their manifest.
   tbl_manifest <- read_csv(manifest_path, show_col_types = FALSE) |>
     mutate(
-      year_midlife = (year_born + year_died) / 2,
+      year_midlife = ceiling((year_born + year_died) / 2),
       title = str_replace_all(title, "_", " ")
-    )
+    ) |>
+    arrange(year_midlife)
   tbl_perfs <- tbl_manifest |>
     mutate(id = row_number()) |>
     rename(path = csv_performance) |>
