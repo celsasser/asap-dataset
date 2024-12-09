@@ -16,4 +16,14 @@ test_canonical_range <- function() {
   print(canonicals)
 }
 
-test_canonical_range()
+f_test_variability <- function() {
+  tbl_manifest <- load_manifest()
+  mlist <- load_music(tbl_manifest$scores)
+  half <- floor(length(mlist) / 2)
+  tbl_old <- bind_rows(mlist[1:half])
+  tbl_new <- bind_rows(mlist[(half + 1):length(mlist)])
+  result <- var.test(tbl_old$note_normal, tbl_new$note_normal)
+  return(result)
+}
+
+result <- f_test_variability()
