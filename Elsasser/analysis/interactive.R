@@ -29,10 +29,12 @@ f_test_variability <- function() {
 f_test_experiment <- function() {
   # Example data
   group1 <- rnorm(100, mean = 0, sd = 1)
-  group2 <- rnorm(100, mean = 0, sd = 2)
+  group2 <- rnorm(100, mean = 0, sd = 4)
 
-  # Perform F-test
-  f_test_result <- var.test(group1, group2)
+  print(var(group1))
+  print(var(group2))
+
+  f_test_result <- var.test(group2, group1)
 
   # Print the results
   print(f_test_result)

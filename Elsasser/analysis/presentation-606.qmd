@@ -27,19 +27,20 @@ year_border <- tbl_music_new$year_written[1]
 
 ## Overview
 
-Music is a mystery. Our ears love it and are quick to process it, but our brains struggle to understand it. For this reason, I am interested in looking at it from a different point of view. Why?
+Music is a mystery. Our ears love it and are quick to process it, but our brains struggle to understand it. 
 
 * I am a musician and I love music. 
 * I am a budding data scientist and I love data.
 * Music theory is not always satisfying.
-* I want to look for patterns in music that a machine may be better at finding than us.
+* I want to look for patterns in music that a machine may be better at finding.
 * Different perspectives nurture new discoveries.
-* For a long time, I have wanted to examine music through the lens of a computer. What better time than now?
+* I have wanted to view music through the lens of a computer for ages. What better time than now?
 
 ## The Data
 
-::: {.font-size-three-quarters}
-Aligned Scores and Performances (ASAP) dataset [repository](https://github.com/celsasser/asap-dataset). Fork of the ASAP dataset [repository](https://github.com/fosfrancesco/asap-dataset) whose authors are: Foscarin, Francesco and McLeod, Andrew and Rigaux, Philippe and Jacquemard, Florent and Sakai, Masahiko
+::: {.font-size-one-half}
+* Source: Aligned Scores and Performances (ASAP) dataset [https://github.com/celsasser/asap-dataset](https://github.com/celsasser/asap-dataset). 
+    * Fork of the ASAP dataset [https://github.com/fosfrancesco/asap-dataset](https://github.com/fosfrancesco/asap-dataset) whose authors are: Foscarin, Francesco and McLeod, Andrew and Rigaux, Philippe and Jacquemard, Florent and Sakai, Masahiko
 
 Follows are the composers and their work represented in the catalog.
 :::
@@ -65,12 +66,11 @@ Follows are the composers and their work represented in the catalog.
 |**Scriabin**|13|2|
 |**Total**|1067|222|
 :::
-:::
 
 
 ## Scores vs. Performances
 
-Performances and scores are very closely related, but they are not the same. The score is the composition as written by the composer. The performance is the composition as played by the performer. Classical music is a very structured genre, but the performance of it is very expressive. It's very difficult to reproduce it in it's entirety with metadata such as dynamics. Where the tempo, key-signature and time-signature are meaningful in the score, they are meaningless in the performances in this repository. According to their metadata (in the MIDI files) they all look as if the were written in 4/4, the key of C and at 120/117 BPM. The score is the blueprint, the performance is the building.
+Performances and scores are very closely related, but they are not the same. The score is the composition as written by the composer. The performance is the composition as played by the performer. Classical music is a very structured genre, but the performance of it is very expressive. It's very difficult to reproduce it in it's entirety with metadata such as dynamics. Where the tempo, key-signature and time-signature are meaningful in the score, they are meaningless in the performances in this repository. Simply, the score is the blueprint, the performance is the building.
 
 
 ## Schema: the Catalog
@@ -142,9 +142,12 @@ The Well-Tempered Clavier I No. 3 in C-sharp major (BWV 848) by J.S. Bach
 
 ## The Question
 
-### Has note variance increased over time?
+### Did composition note variance increase between 1685 and 1953?
 
-I believe it may have. I shall use an F-test to determine if there is a significant difference in note variance between the two portions of the dataset: 1685 - 1799 and 1799 - 1953.
+I believe did. To test this, I will: 
+
+* Divide the data into two portions: 1685 - 1799 and 1799 - 1953
+* Use an f-test to determine if there is a significant difference in note variance.
 
 **Independent variable**: time.
 
@@ -176,7 +179,7 @@ list_manifest$scores |>
 ```{r}
 tbl_music_all |>
   ggplot(mapping = aes(x = note_normal, y = factor(year_written), )) +
-  geom_boxplot() +
+  geom_boxplot(outliers = FALSE) +
   labs(
     title = "IQR+ by Year",
     x = "Note Value",
@@ -194,13 +197,13 @@ music_all_nn_sd <- sd(tbl_music_all$note_normal)
 tbl_music_all |>
   ggplot(mapping = aes(x = note_normal)) +
   geom_histogram(
-    mapping = aes(y = ..density..), 
+    mapping = aes(y = ..density..,), 
     binwidth = 0.025
   ) +
   stat_function(
     args = list(mean = music_all_nn_mean, sd = music_all_nn_sd),
     fun = dnorm,
-    mapping = aes(color = "red", linewidth = 0.025),
+    mapping = aes(alpha = 0.8, color = "red", linewidth = 0.025),
     show.legend = FALSE
   ) +
   labs(
@@ -233,9 +236,9 @@ tbl_music_all |>
 ```{r}
 tbl_music_old |>
   summarise(
-    mean = mean(note_normal),
-    sd = sd(note_normal),
-    note_count = n()
+    mean = round(mean(note_normal), 3),
+    sd = round(sd(note_normal), 3),
+    N = n()
   ) |>
   kable()
 ```
@@ -249,14 +252,21 @@ tbl_music_new |>
   summarise(
     mean = round(mean(note_normal), 3),
     SD = round(sd(note_normal), 3),
-    note_count = n()
+    N = n()
   ) |>
   kable()
-
 ```
 
 :::
 :::
+
+Ratio of SDs: $$ \frac{var\text{(1799 - 1953)}}{var\text{(1685 - 1799)}} = 1.155$$
+
+```{r}
+#| eval: false
+round(sd(tbl_music_new$note_normal) / sd(tbl_music_old$note_normal), 3)
+```
+
 
 ## Assumptions (cont.)
 1. Is data is normally distributed?
@@ -269,7 +279,7 @@ Yes, each note is independent of the other notes.
 
 3. Homogeneity of variance?
 
-We calculated our SD for both portions of our dataset and found that they are close, with a difference of ~0.01, which is 1% of our range. This is acceptable.
+I calculated SD for both portions of the dataset and found that they are close with a difference of ~0.01, which is 1% of our range. This is acceptable.
 
 ## Hypothesis
 
@@ -280,14 +290,21 @@ $H_1$: There is a significant difference in note variance over time.
 
 ## F Test
 
+:::{.font-size-two-thirds}
+`var.test(music_new, music_old)`
+:::
+
 ```{r}
-result <- var.test(tbl_music_old$note_normal, tbl_music_new$note_normal)
+# the documentation is not helpful regarding the order of these arguments,
+# but through experimentation I found that the first argument is the numerator
+# in the ratio of variances.
+result <- var.test(tbl_music_new$note_normal, tbl_music_old$note_normal)
 print(result)
 ```
 
 ## Conclusion
 
-The p-value is crazy small which gives me reason to believe that I can reject the null hypothesis. There is a significant difference in note variance between the two portions of the dataset.
+The p-value is crazy small (2.2e-16) and the confidence interval (1.326578 1.340352) is fairly high, which gives me reason to believe that I can reject the null hypothesis. There is a significant difference in note variance between the two portions of the dataset.
 
 ## Important?
 
