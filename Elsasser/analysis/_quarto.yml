@@ -1,9 +1,8 @@
 project:
-  title: "Classical Analysis"
+  title: "Analysis"
 
 format:
   html:
     embed-resources: true
     fig-width: 8
     fig-height: 8
-    theme: cosmo
