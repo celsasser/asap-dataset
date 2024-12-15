@@ -2,7 +2,7 @@
 title: "DATA 607: Final Project Presentation"
 subtitle: "Analysis of Scores and Performances (ASAP)"
 author: "Curtis Elsasser"
-date: "12/15/2024"
+date: "12/14/2024"
 # configure the display port
 width: 1050
 height: 900

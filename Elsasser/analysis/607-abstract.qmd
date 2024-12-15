@@ -1,17 +1,24 @@
 ---
 title: "DATA 607: Final Project Abstract"
 subtitle: "Analysis of Scores and Performances (ASAP)"
+date: "12/14/2024"
 author: "Curtis Elsasser"
+format: pdf
+margin-top: 0.75in
 ---
 
-### Introduction 
+#### Introduction 
 
-My introductory paragraph for my proposal was, "Music is a mystery. Our ears love it and are quick to process it, but our brains struggle to understand it." I have wrangled and explored 222 compositions and 1067 performances, attempting to better understand it.
+My introductory paragraph for my proposal was, "Music is a mystery. Our ears love it and are quick to process it, but our brains struggle to understand it." To better understand it, I have wrangled and explored 222 compositions and 1067 performances.
 
+#### Wrangling
 
-### Analysis 
+I opted to do most of my wrangling in TypeScript because of [midi-file-io](https://www.npmjs.com/package/midi-file-io). It's an unpopular package, but it does exactly what I wanted a parser to do. I was able to extract notes, tempos, key signatures, time signatures, and ticks-per-quarter from the MIDI files in the [ASAP dataset](https://github.com/celsasser/asap-dataset). After a little processing, they were written as CSV files, and [metadata.csv](https://github.com/celsasser/asap-dataset/blob/main/metadata.csv) was updated accordingly. Here, I sorely missed R for its elegant support of CSV files.
 
+#### Analysis 
 
-### Conclusion 
+I primarily analyzed through visualization. I believe the most fascinating reveal was the degree of correlation between notes and velocity (the rate at which a note is struck) in performances. The six performances with the highest Pearson correlation coefficient were in the range of 0.77 to 0.69. I feel as if I missed an opportunity to use `lm` to draw the lines of regression. Almost equally fascinating was how the velocity distribution for performances approached a normal distribution. I surely should follow up with QQ plots and non-visual tests to confirm the conformity. 
 
+#### Conclusion 
 
+I don’t believe this dataset is adequate for drawing conclusions about the period from 1685 to 1953 that it covers. It’s small, limited to music for the keyboard, and the composers are not randomly selected. Nonetheless, I think it’s worthy of study. And who better to analyze than the giants! The project felt like exploration, and I didn't know what to expect. Some experiments resulted in genuine surprise and others in disappointment. My ratio for being right was low. I think there is a lot more to explore with this style of music analysis, and I hope others will join me on the journey.
